@@ -3,8 +3,8 @@
     <!-- 头部 -->
     <el-header>
       <div>
-        <img src="../assets/heima.png" width="50px" alt="" />
-        <span>电商后台管理系统</span>
+        <img src="../assets/logo.png" width="50px" alt="" />
+        <span>自助口罩售卖机后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button></el-header
     >
@@ -69,7 +69,67 @@ export default {
   data() {
     return {
       // 做菜单数据
-      menulist: [],
+      menulist: [{
+        authName: '用户管理',
+        children: [
+          {
+            authName: '用户列表',
+            path: 'users'
+          }
+        ]
+      },
+        {
+          authName: '进货管理',
+          children: [
+            {
+              authName: '进货管理',
+              path: 'roles'
+            }
+        ]
+        },
+        {
+          authName: '库存管理',
+          children: [
+            {
+              authName: '出货记录',
+              path: 'goods'
+            },
+            {
+              authName: '进货记录',
+              path: 'goods/add'
+            },
+          ]
+        },
+        {
+          authName: '订单管理',
+          children: [
+            {
+              authName: '订单',
+              path: 'orders'
+            }
+            ]
+        },
+        {
+          authName: '数据统计',
+          children: [
+            {
+              authName: '类别',
+              path: 'categories'
+            }
+            ,
+            {
+              authName: '参数',
+              path: 'params'
+            },
+            {
+              authName: '报表',
+              path: 'reports'
+            }
+          ]
+        }
+
+
+      ],
 
       iconsObj: [
         '#icon-yonghuguanli',
@@ -93,12 +153,12 @@ export default {
       this.$router.push('/login')
     },
     // 获取所有菜单
-    async getMenuList() {
-      const { data: res } = await this.$http.get('menus')
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-      this.menulist = res.data
-      // console.log(res);
-    },
+    // async getMenuList() {
+    //   const { data: res } = await this.$http.get('menus')
+    //   if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+    //   this.menulist
+    //   // console.log(res);
+    // },
     // 点击按钮，菜单切换折叠与展开
     toggleCollapse() {
       this.isCollapse = !this.isCollapse

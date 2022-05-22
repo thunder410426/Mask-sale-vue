@@ -34,10 +34,9 @@
     <!-- 用户列表 -->
     <el-table :data="userList" border stripe>
       <el-table-column type="index"></el-table-column>
-      <el-table-column label="姓名" prop="username"> </el-table-column>
-      <el-table-column label="邮箱" prop="email"> </el-table-column>
-      <el-table-column label="电话" prop="mobile"> </el-table-column>
-      <el-table-column label="角色" prop="role_name"> </el-table-column>
+      <el-table-column label="用户昵称" prop="nickName"> </el-table-column>
+      <el-table-column label="注册时间" prop="registeTime"> </el-table-column>
+      <el-table-column label="openId" prop="openId"> </el-table-column>
       <el-table-column label="状态" prop="mg_state">
         <template slot-scope="scope">
           <el-switch
@@ -160,22 +159,22 @@
       width="50%"
       @close="setRoleDialogClosed"
     >
-      <div>
-        <p>当前的用户：{{ userInfo.username }}</p>
-        <p>当前的角色：{{ userInfo.role_name }}</p>
-        <p>
-          分配新角色：
-          <el-select v-model="selectedRoleId" placeholder="请选择">
-            <el-option
-              v-for="item in rolesList"
-              :key="item.id"
-              :label="item.roleName"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </p>
-      </div>
+<!--      <div>-->
+<!--        <p>当前的用户：{{ userInfo.username }}</p>-->
+<!--        <p>当前的角色：{{ userInfo.role_name }}</p>-->
+<!--        <p>-->
+<!--          分配新角色：-->
+<!--          <el-select v-model="selectedRoleId" placeholder="请选择">-->
+<!--            <el-option-->
+<!--              v-for="item in rolesList"-->
+<!--              :key="item.id"-->
+<!--              :label="item.roleName"-->
+<!--              :value="item.id"-->
+<!--            >-->
+<!--            </el-option>-->
+<!--          </el-select>-->
+<!--        </p>-->
+<!--      </div>-->
       <span slot="footer" class="dialog-footer">
         <el-button @click="setRoleDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
@@ -296,13 +295,13 @@ export default {
   methods: {
     // 获取用户列表
     async getUserList() {
-      const { data: res } = await this.$http.get('users', {
+      const { data: res } = await this.$http.post('selectAllUser', {
         params: this.queryInfo,
       })
-      if (res.meta.status !== 200) {
-        return this.message.error('用户列表获取失败')
-      }
-      this.userList = res.data.users
+      // if (res.meta.status !== 200) {
+      //   return this.message.error('用户列表获取失败')
+      // }
+      this.userList = res.data
       this.total = res.data.total
     },
     // 监听pagesize改变的事件

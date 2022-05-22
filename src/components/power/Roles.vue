@@ -12,7 +12,7 @@
       <el-row>
         <el-col>
           <el-button type="primary" @click="addDialogVisible = true"
-            >添加角色</el-button
+            >添加设备</el-button
           >
         </el-col>
       </el-row>
@@ -70,13 +70,11 @@
         </el-table-column>
         <!-- 索引列 -->
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="角色名称" prop="roleName"> </el-table-column>
-        <el-table-column label="角色描述" prop="roleDesc"> </el-table-column>
+        <el-table-column label="设备id" prop="equipmentId"> </el-table-column>
+        <el-table-column label="库存数量" prop="maskNum"> </el-table-column>
         <el-table-column label="操作" prop="pid" width="300px">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" icon="el-icon-edit"
-              >编辑</el-button
-            >
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="purchase = true">编辑</el-button>
             <el-button size="mini" type="danger" icon="el-icon-delete"
               >删除</el-button
             >
@@ -91,6 +89,30 @@
         </el-table-column>
       </el-table>
     </el-card>
+    <el-dialog
+      title="修改库存"
+      :visible.sync="purchase"
+      width="50%"
+      @close="purchase"
+    >
+      <!-- 内容主体区 -->
+      <el-form
+        :model="inventory"
+        :rules="inventory"
+        ref="inventory"
+        label-width="70px"
+      >
+        <el-form-item label="库存" prop="maskNum">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+      </el-form>
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateinventory">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <!-- 分配权限 -->
     <el-dialog
       title="分配权限"
@@ -115,6 +137,22 @@
     </el-dialog>
   </div>
 </template>
+
+
+<script>
+export default {
+  data() {
+    return{
+      updateinventory: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: '',
+      }
+    }
+  }
+}
+</script>
 
 <script>
 export default {
@@ -144,12 +182,29 @@ export default {
   methods: {
     // 获取所有角色列表
     async getRolesList() {
-      const { data: res } = await this.$http.get('roles')
-      if (res.meta.status !== 200) {
-        return this.message.error('角色列表获取失败')
-      }
+      const { data: res } = await this.$http.post('queryInventory')
+      // if (res.meta.status !== 200) {
+      //   return this.message.error('角色列表获取失败')
+      // }
       this.rolesList = res.data
     },
+    //修改库存
+
+    updateinventory() {
+      this.$refs.inventory.validate(async (valid) => {
+        if (!valid) return
+        //可以添加用户的网络请求
+        const { data: res } = await this.$http.post('users', this.addUser())
+        if (res.meta.status !== 201) {
+          return this.$message.error('用户添加失败')
+        }
+        this.$message.success('用户添加成功')
+        // 隐藏添加用户的对话框
+        this.addDialogVisible = false
+        this.getUserList()
+      })
+    },
+
     // 根据id删除对应的id
     async removeRightById(role, rightId) {
       const confirmResult = await this.$confirm(
